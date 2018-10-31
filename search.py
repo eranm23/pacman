@@ -18,6 +18,23 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+from game import Actions
+from game import Directions
+
+
+class Node:
+
+    def __init__(self, state, action, cost, parent):
+      self.state = state
+      self.action = action
+      self.cost = cost
+      self.parent = parent
+    
+    def __str__(self):
+      return str(self.state) + ", " + str(self.action) + ", " + str(self.cost)
+
+    def __eq__(self, node):
+      return self.action == node.action and self.state == node.state and self.cost == node.cost
 
 class SearchProblem:
     """
@@ -72,27 +89,67 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+debug = False
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
-
     Your search algorithm needs to return a list of actions that reaches the
     goal. Make sure to implement a graph search algorithm.
-
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
-
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.Stack()
+    return blindSearch(problem, frontier)
+ 
+def blindSearch(problem, frontier):
+  node = Node(problem.getStartState(), None, 0, None)
+  frontier.push(node)
+  explored = []
+  while True:
+    if frontier.isEmpty():
+      print "ERROR in blindSearch function: frontier is empty!"
+      return []
+    node = frontier.pop()
+    if(debug): print "Exploring node: ", node
+    if(debug): raw_input("Press Enter to continue...")
+    
+    successors = problem.getSuccessors(node.state)
+    if(debug): print "new successors:", successors
+    for successor in successors:
+      childNode = Node(successor[0], successor[1], node.cost + successor[2], node)
+      if (childNode.state not in explored) and (childNode not in frontier.list) :
+        if(problem.isGoalState(childNode.state)):
+          return solution(childNode)
+        frontier.push(childNode)
+        if(debug): print "Child node pushed: ", childNode
+      else:
+        if(debug): print "Child node not pushed: ", childNode
+        
+    explored.append(node.state)
+
+def solution(node):
+  """
+  returns an actions list represent a solution from initial node to goal state node.
+  """
+  actions = []
+  while node != None and node.action != None:
+    actions.append(node.action)
+    node = node.parent
+  actions.reverse()  
+  return actions
+
+
+    
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    frontier = util.Queue()
+    return blindSearch(problem, frontier)
+    
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
