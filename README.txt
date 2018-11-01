@@ -24,5 +24,6 @@ Maman 11
 2. BFS implementaion:
 	Same as DFS, except frontier is Util.queue.
 
-   BFS algorithem is not optimal, becouse (as in DFS) the push order is arbitray per each level and so is the pop out. 
+   BFS algorithem is not optimal, becouse the push order is arbitray per EACH LEVEL and so is the pop out. 
+   in case of cost is the same per each level, the solution will be optimal.
 	
