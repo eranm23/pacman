@@ -153,8 +153,44 @@ def breadthFirstSearch(problem):
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.PriorityQueue()
+    node = Node(problem.getStartState(), None, 0, None)
+    frontier.push(node, node.cost)
+    explored = []
+    while True:
+      if frontier.isEmpty():
+        print "ERROR in uniformCostSearch function: frontier is empty!"
+        return []
+      node = frontier.pop()
+      if(debug): print "Exploring node: ", node
+      if(debug): raw_input("Press Enter to continue...")
+      
+      successors = problem.getSuccessors(node.state)
+      if(debug): print "new successors:", successors
+      for successor in successors:
+        childNode = Node(successor[0], successor[1], node.cost + successor[2], node)
+        if not existsInPriorityQueue(frontier.heap, childNode) :
+          if(problem.isGoalState(childNode.state)):
+            return solution(childNode)
+          if (childNode.state not in explored):
+            frontier.push(childNode, node.cost)
+          else:
+            frontier.update(childNode, node.cost)
+          if(debug): print "Child node pushed: ", childNode
+        else:
+          if(debug): print "Child node not pushed: ", childNode
+          
+      explored.append(node.state)
+
+def existsInPriorityQueue(heap, item):
+  """
+  This is utility function that check if raw item exists in heapq (python class).
+  """
+  for heapItem in heap:
+    if(heapItem[2] == item):
+      return True
+  return False
+
 
 def nullHeuristic(state, problem=None):
     """
