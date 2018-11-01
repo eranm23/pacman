@@ -15,7 +15,7 @@
                 "-p",
                 "SearchAgent",
                  "-a",
-                 "fn=bfs"
+                 "fn=ucs"
             ],
             "console": "integratedTerminal"
         },

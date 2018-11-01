@@ -166,17 +166,14 @@ def uniformCostSearch(problem):
       if(debug): raw_input("Press Enter to continue...")
       
       successors = problem.getSuccessors(node.state)
-      if(debug): print "new successors:", successors
+      """if(debug): print "new successors:", successors"""
       for successor in successors:
         childNode = Node(successor[0], successor[1], node.cost + successor[2], node)
-        if not existsInPriorityQueue(frontier.heap, childNode) :
+        if childNode.state not in explored:
           if(problem.isGoalState(childNode.state)):
             return solution(childNode)
-          if (childNode.state not in explored):
-            frontier.push(childNode, node.cost)
-          else:
-            frontier.update(childNode, node.cost)
-          if(debug): print "Child node pushed: ", childNode
+          frontier.update(childNode, node.cost)
+          if(debug): print "Child node pushed/updated: ", childNode
         else:
           if(debug): print "Child node not pushed: ", childNode
           
