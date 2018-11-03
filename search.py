@@ -153,13 +153,26 @@ def breadthFirstSearch(problem):
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
+    """ we call astar search with null heuristic"""
+    return aStarSearch(problem)
+
+
+def nullHeuristic(state, problem=None):
+    """
+    A heuristic function estimates the cost from the current state to the nearest
+    goal in the provided SearchProblem.  This heuristic is trivial.
+    """
+    return 0
+
+def aStarSearch(problem, heuristic=nullHeuristic):
+    """Search the node that has the lowest combined cost and heuristic first."""
     frontier = util.PriorityQueue()
     node = Node(problem.getStartState(), None, 0, None)
-    frontier.push(node, node.cost)
+    frontier.push(node, node.cost + heuristic(node.state, problem))
     explored = []
     while True:
       if frontier.isEmpty():
-        print "ERROR in uniformCostSearch function: frontier is empty!"
+        print "ERROR in aStarSearch function: frontier is empty!"
         return []
       node = frontier.pop()
       if(debug): print "Exploring node: ", node
@@ -172,35 +185,12 @@ def uniformCostSearch(problem):
         if childNode.state not in explored:
           if(problem.isGoalState(childNode.state)):
             return solution(childNode)
-          frontier.update(childNode, node.cost)
+          frontier.update(childNode, childNode.cost + heuristic(childNode.state, problem))
           if(debug): print "Child node pushed/updated: ", childNode
         else:
           if(debug): print "Child node not pushed: ", childNode
           
       explored.append(node.state)
-
-def existsInPriorityQueue(heap, item):
-  """
-  This is utility function that check if raw item exists in heapq (python class).
-  """
-  for heapItem in heap:
-    if(heapItem[2] == item):
-      return True
-  return False
-
-
-def nullHeuristic(state, problem=None):
-    """
-    A heuristic function estimates the cost from the current state to the nearest
-    goal in the provided SearchProblem.  This heuristic is trivial.
-    """
-    return 0
-
-def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
 
 # Abbreviations
 bfs = breadthFirstSearch
