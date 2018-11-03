@@ -42,4 +42,12 @@ Maman 11
 	its look like pacman scan the maze for east to west until it get to the goal, and this is because the order of getSuccessores
 	first east/west and then north/south.
 
-5.
+5. Corners Problem
+
+	State is location and not visited corners location list : (location, notVisitedCornerList)
+    Start state is start location and all corners list
+    Goul state is any location and empty corner list, meanning all corner visited.
+
+	When exploring node, if location is one of the NV corners, we remove the corner from the NV corners list.
+
+6.
