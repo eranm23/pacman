@@ -11,11 +11,11 @@
             "program": "${workspaceFolder}/pacman.py",
             "args": [
                 "-l",
-                "tinyCorners",
+                "mediumCorners",
                 "-p",
-                "SearchAgent",
-                 "-a",
-                 "fn=bfs,prob=CornersProblem"
+                "AStarCornersAgent",
+                 "-z",
+                 "0.5"
             ],
             "console": "integratedTerminal"
         },

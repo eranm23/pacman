@@ -50,4 +50,7 @@ Maman 11
 
 	When exploring node, if location is one of the NV corners, we remove the corner from the NV corners list.
 
-6.
+6. Heuristic calculation:
+        summary the manhattan distance from current location to nearest corner, and from this corner the next colset corner and so on.
+        this value will be shorter path, since in our problem we have also walls inside the maze, the actual path will be equal or greater from this value.
+        Therefore this is an admissible heuristic.

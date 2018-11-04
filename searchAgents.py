@@ -376,8 +376,40 @@ def cornersHeuristic(state, problem):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
-    "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    currentLocation = state[0]
+    nvCornersList = list(state[1]) # not visited yet corner list.
+
+    """
+    Heuristic calculation:
+        summary the manhattan distance from current location to nearest corner, and from this corner the next colset corner and so on.
+        this value will be shorter path, since in our problem we have also walls inside the maze, the actual path will be equal or greater from this value.
+        Therefore this is admissible heuristic.
+    """
+    sum = 0
+    closestCorner, distance = findClosetManhattanDistanceCorner(nvCornersList, currentLocation)
+    while (closestCorner != None) and (distance > -1):
+        sum += distance
+        nvCornersList.remove(closestCorner)
+        currentLocation = closestCorner
+        closestCorner, distance = findClosetManhattanDistanceCorner(nvCornersList, currentLocation)
+
+           
+    return sum # Default to trivial solution
+
+def findClosetManhattanDistanceCorner(cornersList, currentLocation):
+    """
+    Function get list of x,y tuples if corners and current loction (x,y) tuple as parameters
+    and return tuple of closet corner and its manhatten distance from current location
+    """
+    mDistance = -1
+    closestCorner = None
+    for corner in cornersList:
+        distance = util.manhattanDistance(currentLocation, corner)
+        if (closestCorner == None) or (distance < mDistance):
+            closestCorner = corner
+            mDistance = distance
+    #print "Closet corner to ", currentLocation,  " is ", closestCorner, " with distance of ", mDistance, " From corners ", cornersList 
+    return (closestCorner, mDistance)
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -470,8 +502,12 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    
+    foodLocationList = foodGrid.asList(True)
+    sum = 0
+    for foodLocation in foodLocationList:
+        sum += util.manhattanDistance(position, foodLocation)
+    return sum
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
