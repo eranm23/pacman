@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -29,13 +29,13 @@ class Node:
       self.action = action
       self.cost = cost
       self.parent = parent
-    
+
     def __str__(self):
-      return str(self.state) + ", " + str(self.action) + ", " + str(self.cost)
+       return str(self.state) + ", " + str(self.action) + ", " + str(self.cost)
 
     def __eq__(self, node):
-      return self.action == node.action and self.state == node.state and self.cost == node.cost
-
+      return self.action == node.action and self.state == node.state and self.cost == node.cost and self.parent == node.parent
+      
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -103,19 +103,22 @@ def depthFirstSearch(problem):
     """
     frontier = util.Stack()
     return blindSearch(problem, frontier)
- 
+
 def blindSearch(problem, frontier):
   node = Node(problem.getStartState(), None, 0, None)
   frontier.push(node)
-  explored = []
+  explored = []  
   while True:
     if frontier.isEmpty():
       print "ERROR in blindSearch function: frontier is empty!"
       return []
     node = frontier.pop()
+    if(node.state in explored):
+      if(debug): print "state alreay explored: ", node.state
+      continue
     if(debug): print "Exploring node: ", node
     if(debug): raw_input("Press Enter to continue...")
-    
+
     successors = problem.getSuccessors(node.state)
     if(debug): print "new successors:", successors
     for successor in successors:
@@ -127,7 +130,7 @@ def blindSearch(problem, frontier):
         if(debug): print "Child node pushed: ", childNode
       else:
         if(debug): print "Child node not pushed: ", childNode
-        
+
     explored.append(node.state)
 
 def solution(node):
@@ -138,18 +141,18 @@ def solution(node):
   while node != None and node.action != None:
     actions.append(node.action)
     node = node.parent
-  actions.reverse()  
+  actions.reverse()
   return actions
 
 
-    
+
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
 
     frontier = util.Queue()
     return blindSearch(problem, frontier)
-    
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
@@ -168,16 +171,22 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     frontier = util.PriorityQueue()
     node = Node(problem.getStartState(), None, 0, None)
-    frontier.push(node, node.cost + heuristic(node.state, problem))
+    hVal = heuristic(node.state, problem)
+    frontier.push(node, node.cost +hVal)
+    if(debug): print "root node pushed: ", node, " heuristic value: ", hVal
     explored = []
     while True:
       if frontier.isEmpty():
         print "ERROR in aStarSearch function: frontier is empty!"
         return []
       node = frontier.pop()
+      if(node.state in explored):
+        if(debug): print "state alreay explored: ", node.state
+        continue
+
       if(debug): print "Exploring node: ", node
       if(debug): raw_input("Press Enter to continue...")
-      
+
       successors = problem.getSuccessors(node.state)
       """if(debug): print "new successors:", successors"""
       for successor in successors:
@@ -185,11 +194,12 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         if childNode.state not in explored:
           if(problem.isGoalState(childNode.state)):
             return solution(childNode)
-          frontier.update(childNode, childNode.cost + heuristic(childNode.state, problem))
-          if(debug): print "Child node pushed/updated: ", childNode
+          hVal = heuristic(childNode.state, problem)
+          frontier.update(childNode, childNode.cost + hVal)
+          if(debug): print "Child node pushed/updated: ", childNode, " heuristic value: ", hVal
         else:
           if(debug): print "Child node not pushed: ", childNode
-          
+
       explored.append(node.state)
 
 # Abbreviations

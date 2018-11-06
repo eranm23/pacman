@@ -51,6 +51,55 @@ Maman 11
 	When exploring node, if location is one of the NV corners, we remove the corner from the NV corners list.
 
 6. Heuristic calculation:
-        summary the manhattan distance from current location to nearest corner, and from this corner the next colset corner and so on.
+        summary the manhattan distances from current location to nearest corner, and from this corner the next colset corner and so on.
         this value will be shorter path, since in our problem we have also walls inside the maze, the actual path will be equal or greater from this value.
         Therefore this is an admissible heuristic.
+
+7. Food Search Heuristic:
+	For each food map of current state we will find all corners. 
+	Number of corners can be greater from 4, example belowe:
+	
+		  X	
+	Xx    x  xX
+	xx
+       x   x
+	X    x      X
+	    Xx    X 
+
+
+	X x xxx X
+	 xxx   X 
+	xxX
+	X
+
+
+
+
+	   X      x  X
+	X        x
+	xxxx  xx       X
+	X
+
+	findCorners function:
+		function accept list of x,y tuples of foodLocation, the list should be ordered accending by x 
+    	and then accending by y, for example: (1,1) (1,3) (1,7) (2,1) (2,2) (3,1) (3,3) (3,4).
+    	and return a list of corners from the food list.
+
+	
+
+		first we scanning columns start from left column and go right for searching corners,
+    	we sacn until we reach column with no corners.
+
+		now ,  scanning columns from right column and go left and find corners of the other columns,
+    	scan is stops when we reach column already has corner (from first scan).
+
+		after we have corners of the food list we use the same heuristic function as in corner problem see 6 above. that heristic still be addmisible 
+		becouse the we do it only on corners and ignoreing the inner food if exist, whitch means actual cost can be greater but no less.
+
+
+	8. finding closest food was done by first finding the goal, I use findClosetManhattanDistance(locationList, currentLocation).
+		Function get list of x,y tuples of locations and current loction (x,y) tuple as parameters
+    	and return tuple of closet location and its manhatten distance from current location
+		
+		This function already use in corners problem and in food search problem, but now location list is all food list and not just corners as in other previos usages.
+	
